@@ -1,25 +1,23 @@
-FROM alpine:3.7
+FROM alpine:3.9
 
-ENV VERSION 0.0.1
+ENV VERSION 0.0.2
 
-MAINTAINER Ruolinn "guangxiao.wang@gmail.com"
+MAINTAINER Ruolinn "y306734635@126.com"
 
 ENV TIMEZONE Asia/Shanghai
 
-#RUN echo https://mirror.tuna.tsinghua.edu.cn/alpine/edge/main | tee -a /etc/apk/repositories \
-#    && echo @testing https://mirror.tuna.tsinghua.edu.cn/alpine/edge/testing | tee -a /etc/apk/repositories \
-#    && echo @community https://mirror.tuna.tsinghua.edu.cn/alpine/edge/community | tee -a /etc/apk/repositories
+#RUN echo https://mirror.tuna.tsinghua.edu.cn/alpine/v3.11/main | tee -a /etc/apk/repositories \
+#    && echo https://mirror.tuna.tsinghua.edu.cn/alpine/v3.11/community | tee -a /etc/apk/repositories
 
-RUN echo https://mirror.tuna.tsinghua.edu.cn/alpine/v3.7/main | tee -a /etc/apk/repositories \
-    && echo @community https://mirror.tuna.tsinghua.edu.cn/alpine/v3.7/community | tee -a /etc/apk/repositories
-
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 RUN apk update
+RUN apk upgrade
 
 RUN apk add --update tzdata
-RUN cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo "${TIMEZONE}" > /etc/timezone
+RUN cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo "${TIMEZONE}" > /etc/timezone && apk del tzdata
 
-RUN apk --update add \
+RUN apk --upgrade add \
     build-base \
     make \
     git \
@@ -31,7 +29,7 @@ RUN apk --update add \
     curl \
     curl-dev
 
-RUN apk --update add \
+RUN apk --upgrade add \
     php7 \
     php7-dev \
     php7-intl \
